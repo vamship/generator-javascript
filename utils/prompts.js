@@ -88,7 +88,7 @@ module.exports = {
                 type: 'input',
                 name: 'projectDescription',
                 message: 'Project description?',
-                default: config.projectDescription || 'My Typescript project'
+                default: config.projectDescription || 'My Javascript project'
             });
         }
 
