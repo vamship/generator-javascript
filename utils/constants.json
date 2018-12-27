@@ -1,0 +1,8 @@
+{
+    "SEPARATOR":
+        "--------------------------------------------------------------------------------",
+    "GENERATOR_NAME": "@vamship/javascript",
+    "SUB_GEN_LIB": "lib",
+    "SUB_GEN_CLI": "cli",
+    "SUB_GEN_API": "api"
+}
