@@ -1,0 +1,46 @@
+{
+    "name": "<%= projectNamespacedName %>",
+    "version": "<%= projectVersion %>",
+    "description": "<%= projectDescription %>",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "grunt test:unit"
+    },
+    "keywords": <%- JSON.stringify(projectKeywords) %>,
+    "author": "<%= authorName %> <<%= authorEmail %>>",
+    "license": "MIT",
+    "devDependencies": {
+        "@vamship/grunt-utils": "^1.1.2",
+        "@vamship/test-utils": "^2.1.1",
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
+        "docdash": "^1.0.1",
+        "grunt": "^1.0.3",
+        "grunt-bump": "^0.8.0",
+        "grunt-contrib-clean": "^2.0.0",
+        "grunt-contrib-watch": "^1.1.0",
+        "grunt-eslint": "^21.0.0",
+        "grunt-jsdoc": "^2.3.0",
+        "grunt-mocha-istanbul": "^5.0.2",
+        "grunt-prettier": "^1.1.0",
+        "istanbul": "^0.4.5",
+        "load-grunt-tasks": "^4.0.0",
+        "mocha": "^5.2.0",
+        "rewire": "^4.0.1",
+        "sinon": "^7.2.2",
+        "sinon-chai": "^3.3.0",
+        "time-grunt": "^2.0.0"
+    },
+    "dependencies": {
+        "@vamship/error-types": "^1.4.1",
+        "ajv": "^6.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://<%= gitUrl %>.git"
+    },
+    "bugs": {
+        "url": "https://<%= gitUrl %>/issues"
+    },
+    "homepage": "https://<%= gitUrl %>#readme"
+}
