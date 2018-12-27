@@ -1,38 +1,53 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const chalk = require('chalk');
-const yosay = require('yosay');
+const _chalk = require('chalk');
+const _yosay = require('yosay');
+
+const _consts = require('../../utils/constants');
+const _package = require('../../package.json');
 
 module.exports = class extends Generator {
-  prompting() {
-    // Have Yeoman greet the user.
-    this.log(
-      yosay(`Welcome to the first-class ${chalk.red('generator-javascript')} generator!`)
-    );
-
-    const prompts = [
-      {
-        type: 'confirm',
-        name: 'someAnswer',
-        message: 'Would you like to enable this option?',
-        default: true
-      }
-    ];
-
-    return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
-  }
-
-  writing() {
-    this.fs.copy(
-      this.templatePath('dummyfile.txt'),
-      this.destinationPath('dummyfile.txt')
-    );
-  }
-
-  install() {
-    this.installDependencies();
-  }
+    /**
+     * Gather basic project information.
+     */
+    gatherProjectInfo() {
+        const generatorTitle = `${_consts.GENERATOR_NAME} v${_package.version}`;
+        this.log(
+            _yosay(
+                `Javascript Project Generators.\n${_chalk.red(generatorTitle)} `
+            )
+        );
+        this.prompt([
+            {
+                type: 'list',
+                name: 'templateType',
+                message: 'What type of project do you want to create?',
+                choices: [
+                    _consts.SUB_GEN_API,
+                    _consts.SUB_GEN_LIB,
+                    _consts.SUB_GEN_CLI
+                ],
+                default: 'library'
+            }
+        ]).then((answers) => {
+            this.log(answers.templateType);
+            switch (answers.templateType) {
+                case _consts.SUB_GEN_API:
+                    this.composeWith(
+                        `${_consts.GENERATOR_NAME}:${_consts.SUB_GEN_API}`
+                    );
+                    break;
+                case _consts.SUB_GEN_LIB:
+                    this.composeWith(
+                        `${_consts.GENERATOR_NAME}:${_consts.SUB_GEN_LIB}`
+                    );
+                    break;
+                case _consts.SUB_GEN_CLI:
+                    this.composeWith(
+                        `${_consts.GENERATOR_NAME}:${_consts.SUB_GEN_CLI}`
+                    );
+                    break;
+            }
+        });
+    }
 };
