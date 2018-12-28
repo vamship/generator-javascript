@@ -1,6 +1,7 @@
 'use strict';
 
 const { Directory } = require('@vamship/grunt-utils');
+const _camelcase = require('camelcase');
 
 // -------------------------------------------------------------------------------
 //  Help documentation
@@ -39,6 +40,22 @@ const HELP_TEXT =
 '                                                                                \n' +
 '   docs              : Generates project documentation.                         \n' +
 '                                                                                \n' +
+<% if(dockerRequired) {-%>
+'                                                                                \n' +
+'   packge            : Packges the api server into a docker container. This     \n' +
+'                       task assumes that the server has been built, and prepared\n' +
+'                       for distribution.                                        \n' +
+'                                                                                \n' +
+'   publish[:[tags]]  : Publishes a packaged docker container to a docker        \n' +
+'                       registry. This assumes that docker credentials have been \n' +
+'                       setup correctly, and that the package has already been   \n' +
+'                       created using the package task.                          \n' +
+'                       This task accepts additional tags to associate with the  \n' +
+'                       repo when publishing. The image is always tagged and     \n' +
+'                       published with the current project version whether or    \n' +
+'                       not any additional tags are specified.                   \n' +
+<% } -%>
+'                                                                                \n' +
 '   test:[unit]       : Executes unit tests against source files.                \n' +
 '                                                                                \n' +
 '   bump:[major|minor]: Updates the version number of the package. By default,   \n' +
@@ -72,7 +89,7 @@ module.exports = function(grunt) {
     //Load all grunt tasks by reading package.json. Ignore @vamshi/grunt-utils,
     //which is actually a utility library and not a grunt task.
     require('load-grunt-tasks')(grunt, {
-        pattern: ['grunt-*', '!@vamship/grunt-utils']
+        pattern: ['grunt-*', '@vamship/grunt-*', '!@vamship/grunt-utils']
     });
 
     /* ------------------------------------------------------------------------
@@ -87,6 +104,20 @@ module.exports = function(grunt) {
         node_modules: null,
         coverage: null
     });
+
+    const packageConfig = grunt.file.readJSON('package.json') || {};
+
+    PROJECT.appName = packageConfig.name || '__UNKNOWN__';
+    PROJECT.version = packageConfig.version || '__UNKNOWN__';
+<% if(dockerRequired) {-%>
+    PROJECT.unscopedName = PROJECT.appName.replace(/^@[^/]*\//, '');
+<%     if(dockerCustomRegistry) { -%>
+    PROJECT.dockerRepo = `<%= dockerCustomRegistry %>/${PROJECT.unscopedName}`;
+<%     } else { -%>
+    PROJECT.dockerRepo = `${PROJECT.appName.replace(/^@/, '')}`;
+<%     } -%>
+    PROJECT.dockerTag = `${PROJECT.dockerRepo}:${PROJECT.version}`;
+<% } -%>
 
     // Shorthand references to key folders.
     const SRC = PROJECT.getChild('src');
@@ -148,8 +179,40 @@ module.exports = function(grunt) {
             ]
         },
 
+<% if(dockerRequired) {-%>
         /**
-         * Configuration for grunt-jsdoc, which can be used to:
+         * Configuration for grunt-shell, which is used to execute:
+         * - Build docker images using the docker cli
+         * - Publish docker images to ECR
+         */
+        shell: {
+            dockerBuild: {
+                command: `docker build --rm --tag ${
+                    PROJECT.dockerTag
+                } ${__dirname} --build-arg APP_NAME=${_camelcase(
+                    PROJECT.unscopedName
+                )} --build-arg APP_VERSION=${
+                    PROJECT.version
+                } --build-arg BUILD_TIMESTAMP=${Date.now()}`
+            },
+            dockerPublish: {
+                command: `docker push ${PROJECT.dockerTag}`
+            },
+            dockerTagAndPublish: {
+                command: (tag) => {
+                    tag = tag || PROJECT.version;
+                    const targetTag = `${PROJECT.dockerRepo}:${tag}`;
+                    return [
+                        `docker tag ${PROJECT.dockerTag} ${targetTag}`,
+                        `docker push ${targetTag}`
+                    ].join('&&');
+                }
+            }
+        },
+<% }-%>
+
+        /**
+         * Configuration for grunt-typedoc, which can be used to:
          *  - Generate code documentation.
          */
         jsdoc: {
@@ -268,10 +331,19 @@ module.exports = function(grunt) {
     grunt.registerTask('docs', ['jsdoc']);
 
     /**
-     * Shows help information on how to use the Grunt tasks.
+     * Packaging task - packages the application for release by building a
+     * docker container.
      */
-    grunt.registerTask('help', 'Displays grunt help documentation', () => {
-        grunt.log.writeln(HELP_TEXT);
+    grunt.registerTask('package', ['shell:dockerBuild']);
+
+    /**
+     * Publish task - publishes an packaged image to the docker registry.
+     */
+    grunt.registerTask('publish', (...tags) => {
+        const tasks = ['shell:dockerPublish'].concat(
+            tags.map((tag) => `shell:dockerTagAndPublish:${tag}`)
+        );
+        grunt.task.run(tasks);
     });
 
     /**
@@ -283,6 +355,12 @@ module.exports = function(grunt) {
      *  - Cleaning up temporary files
      */
     grunt.registerTask('all', ['format', 'lint', 'test:unit', 'clean']);
+    /**
+     * Shows help information on how to use the Grunt tasks.
+     */
+    grunt.registerTask('help', 'Displays grunt help documentation', () => {
+        grunt.log.writeln(HELP_TEXT);
+    });
 
     /**
      * Default task. Shows help information.

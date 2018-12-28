@@ -1,5 +1,6 @@
 'use strict';
 
+const _camelcase = require('camelcase');
 const _semver = require('semver');
 const _consts = require('./constants');
 
@@ -118,6 +119,7 @@ module.exports = {
             if (projectNamespace !== '') {
                 gen.props.projectNamespacedName = `${projectNamespace}/${projectName}`;
             }
+            gen.props.projectCamelCasedName = _camelcase(projectName);
 
             properties.forEach((propName) => {
                 let propValue = props[propName];

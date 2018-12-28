@@ -14,15 +14,18 @@ module.exports = class extends Generator {
     gatherProjectInfo() {
         const generatorTitle = `${_consts.GENERATOR_NAME} v${_package.version}`;
         this.log(
-            _yosay(
-                `Typescript Library Generator.\n${_chalk.red(generatorTitle)} `
-            )
+            _yosay(`Javascript CLI Generator.\n${_chalk.red(generatorTitle)} `)
         );
 
-        this.config.set('_projectType', _consts.SUB_GEN_LIB);
-        return _prompts.getProjectInfo(this, true).then(() => {
-            return _prompts.getAuthorInfo(this, true);
-        });
+        this.config.set('_projectType', _consts.SUB_GEN_CLI);
+        return _prompts
+            .getProjectInfo(this, true)
+            .then(() => {
+                return _prompts.getAuthorInfo(this, true);
+            })
+            .then(() => {
+                return _prompts.getDockerInfo(this, true);
+            });
     }
 
     /**
@@ -35,12 +38,13 @@ module.exports = class extends Generator {
             '_npmignore',
             '_prettierrc',
             '_projections.json',
+            'Dockerfile',
             'docs/index.md',
             'Gruntfile.js',
             'package.json',
             'README.md',
-            'src/index.js',
-            'test/unit/index-spec.js'
+            'src/commands/greet.js',
+            'test/unit/commands/greet-spec.js'
         ].forEach((srcFile) => {
             const destFile =
                 srcFile.indexOf('_') === 0
@@ -52,6 +56,18 @@ module.exports = class extends Generator {
                 this.props
             );
         });
+
+        this.fs.copyTpl(
+            this.templatePath('_rc'),
+            this.destinationPath(`.${this.props.projectCamelCasedName}rc`),
+            this.props
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('bin/main.js'),
+            this.destinationPath(`bin/${this.props.projectName}.js`),
+            this.props
+        );
     }
 
     /**
@@ -70,8 +86,8 @@ module.exports = class extends Generator {
         [
             `                                                                                `,
             `--------------------------------------------------------------------------------`,
-            ` Your Javascript libary project has been created, and is ready for use. Grunt   `,
-            ` tasks have been provided for common development tasks such as:                 `,
+            ` Your Javascript CLI project has been created, and is ready for use. Grunt tasks`,
+            ` have been provided for common development tasks such as:                       `,
             `                                                                                `,
             ` Running all unit tests:                                                        `,
             `   ${grunt} ${gruntTestCommand}                                                 `,

@@ -1,0 +1,22 @@
+{
+    "default": {
+        "app": {},
+        "log": {
+            "level": "trace",
+            "extremeLogging": false
+        }
+    },
+    "development": {
+        "app": {}
+    },
+    "test": {
+        "app": {}
+    },
+    "production": {
+        "app": {},
+        "log": {
+            "level": "error",
+            "extremeLogging": true
+        }
+    }
+}
