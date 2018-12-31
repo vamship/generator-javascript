@@ -257,7 +257,9 @@ module.exports = {
 
         const prompts = [];
         const dockerOptional =
-            gen.config.get('_projectType') === _consts.SUB_GEN_CLI;
+            [_consts.SUB_GEN_CLI, _consts.SUB_GEN_API].indexOf(
+                gen.config.get('_projectType')
+            ) >= 0;
 
         if (!config.dockerRequired || force) {
             prompts.push({
