@@ -282,7 +282,13 @@ module.exports = function(grunt) {
      *  - Test source code
      *  - Cleaning up temporary files
      */
-    grunt.registerTask('all', ['format', 'lint', 'test:unit', 'clean']);
+    grunt.registerTask('all', [
+        'clean',
+        'format',
+        'lint',
+        'test:unit',
+        'clean'
+    ]);
 
     /**
      * Default task. Shows help information.

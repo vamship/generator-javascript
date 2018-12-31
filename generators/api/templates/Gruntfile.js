@@ -26,13 +26,19 @@ const HELP_TEXT =
 '                                    against all source files.                   \n' +
 '                        [unit]    : Executes unit tests against all source      \n' +
 '                                    files.                                      \n' +
+'                         [api]    : Executes http request test against server   \n' +
+'                                    routes. This task will automatically launch \n' +
+'                                    the web server prior to running the tests,  \n' +
+'                                    and shutdown the server after the tests have\n' +
+'                                    been executed.                              \n' +
 '                        [docs]    : Regenerates project documentation based     \n' +
 '                                    on jsdocs.                                  \n' +
+'                       The monitor task will only perform one action at a time. \n' +
+'                       If watches need to be executed on multiple targets,      \n' +
+'                       separate `grunt monitor` tasks may be run in parallel.   \n' +
 '                                                                                \n' +
-'                       Multiple options may be specified, and the triggers will \n' +
-'                       be executed in the order specified. If a specific task   \n' +
-'                       requires a web server to be launched, this will be done  \n' +
-'                       automatically.                                           \n' +
+'                       If a specific task requires a web server to be launched, \n' +
+'                       that will be done automatically.                         \n' +
 '                                                                                \n' +
 '   lint              : Performs linting of all source and test files.           \n' +
 '                                                                                \n' +
@@ -56,7 +62,11 @@ const HELP_TEXT =
 '                       not any additional tags are specified.                   \n' +
 <% } -%>
 '                                                                                \n' +
-'   test:[unit]       : Executes unit tests against source files.                \n' +
+'   test:[unit|api]   : Executes tests against source files. The type of test    \n' +
+'                       to execute is specified by the first sub target          \n' +
+'                       (unit/api).                                              \n' +
+'                       If required by the tests, an instance of express will be \n' +
+'                       started prior to executing the tests.                    \n' +
 '                                                                                \n' +
 '   bump:[major|minor]: Updates the version number of the package. By default,   \n' +
 '                       this task only increments the patch version number. Major\n' +
@@ -74,6 +84,8 @@ const HELP_TEXT =
 '                       running tests. Useful when development is focused on a   \n' +
 '                       small section of the app, and there is no need to retest \n' +
 '                       all components when runing a watch.                      \n' +
+'   --no-server       : When set to true, does not start a server even if the    \n' +
+'                       grunt operation requires one.                            \n' +
 '                                                                                \n' +
 ' IMPORTANT: Please note that while the grunt file exposes tasks in addition to  \n' +
 ' ---------  the ones listed below (no private tasks in grunt yet :( ), it is    \n' +
@@ -98,9 +110,11 @@ module.exports = function(grunt) {
     const PROJECT = Directory.createTree('./', {
         src: null,
         test: {
-            unit: null
+            unit: null,
+            api: null
         },
         docs: null,
+        logs: null,
         node_modules: null,
         coverage: null
     });
@@ -125,6 +139,7 @@ module.exports = function(grunt) {
     const DOCS = PROJECT.getChild('docs');
     const NODE_MODULES = PROJECT.getChild('node_modules');
     const COVERAGE = PROJECT.getChild('coverage');
+    const LOGS = PROJECT.getChild('logs');
 
     /* ------------------------------------------------------------------------
      * Grunt task configuration
@@ -136,6 +151,7 @@ module.exports = function(grunt) {
          */
         clean: {
             coverage: [COVERAGE.path],
+            logs: [LOGS.getAllFilesPattern('log')],
             ctags: [PROJECT.getFilePath('tags')]
         },
 
@@ -149,7 +165,8 @@ module.exports = function(grunt) {
                 reporter: 'spec',
                 colors: true
             },
-            unit: [TEST.getChild('unit').getAllFilesPattern('js')]
+            unit: [TEST.getChild('unit').getAllFilesPattern('js')],
+            api: [TEST.getChild('api').getAllFilesPattern('js')]
         },
 
         /**
@@ -236,6 +253,36 @@ module.exports = function(grunt) {
         },
 
         /**
+         * Configuration for grunt-express-server, which is used to:
+         *  - Start an instance of the express server for the purposes of
+         *    running tests.
+         */
+        express: {
+            monitor: {
+                options: {
+                    node_env: 'development',
+                    logs: {
+                        out: LOGS.getFilePath('monitor_out.log'),
+                        err: LOGS.getFilePath('monitor_err.log')
+                    },
+                    script: SRC.getFilePath('index.js'),
+                    delay: 2
+                }
+            },
+            test: {
+                options: {
+                    node_env: 'test',
+                    logs: {
+                        out: LOGS.getFilePath('test_out.log'),
+                        err: LOGS.getFilePath('test_err.log')
+                    },
+                    script: SRC.getFilePath('index.js'),
+                    delay: 2
+                }
+            }
+        },
+
+        /**
          * Configuration for grunt-bump, which is used to:
          *  - Update the version number on package.json
          */
@@ -255,13 +302,20 @@ module.exports = function(grunt) {
      */
     grunt.registerTask('test', 'Executes tests against sources', (testType) => {
         testType = testType || 'unit';
-        let task;
+        const validTasks = {
+            unit: [`mocha_istanbul:${testType}`],
+            api: [`mocha_istanbul:${testType}`]
+        };
+        const requireServer = testType === 'api' && !grunt.option('no-server');
 
-        if (['unit'].indexOf(testType) >= 0) {
-            task = `mocha_istanbul:${testType}`;
-
-            const testSuite = grunt.option('test-suite');
+        const tasks = validTasks[testType];
+        if (['unit', 'api'].indexOf(testType) >= 0) {
+            let testSuite = grunt.option('test-suite');
             if (typeof testSuite === 'string' && testSuite.length > 0) {
+                if (!testSuite.endsWith('.js')) {
+                    grunt.log.warn('Adding .js suffix to test suite');
+                    testSuite = testSuite + '.js';
+                }
                 const path = TEST.getChild(testType).getFilePath(testSuite);
                 grunt.log.writeln(`Running test suite: [${testSuite}]`);
                 grunt.log.writeln(`Tests will be limited to: [${path}]`);
@@ -269,8 +323,12 @@ module.exports = function(grunt) {
             }
         }
 
-        if (task) {
-            grunt.task.run(task);
+        if (tasks) {
+            if (requireServer) {
+                tasks.unshift('express:test');
+                tasks.push('express:test:stop');
+            }
+            grunt.task.run(tasks);
         } else {
             grunt.log.error(`Unrecognized test type: [${testType}]`);
             grunt.log.warn('Type "grunt help" for help documentation');
@@ -286,27 +344,26 @@ module.exports = function(grunt) {
     grunt.registerTask(
         'monitor',
         'Monitors source files for changes, and performs tasks as necessary',
-        (...args) => {
+        (target) => {
             const validTasks = {
-                lint: 'lint',
-                unit: 'test:unit',
-                docs: 'docs'
+                docs: ['docs'],
+                lint: ['lint'],
+                unit: ['test:unit'],
+                api: ['test:api'],
+                server: ['express:monitor', 'monitor:server']
             };
 
-            // Process the arguments (specified as subtasks).
-            const tasks = args
-                .map((arg) => {
-                    const task = validTasks[arg];
-                    if (task) {
-                        return task;
-                    }
-                    grunt.log.warn(`Unrecognized argument [${arg}]`);
-                })
-                .filter((task) => !!task);
+            const tasks = validTasks[target];
 
-            if (tasks.length > 0) {
+            if (tasks) {
                 grunt.log.writeln(`Tasks to run on change: [${tasks}]`);
                 grunt.config.set('watch.allSources.tasks', tasks);
+                if (['server'].indexOf(target) >= 0) {
+                    grunt.log.debug('Setting watch.options.spawn=false');
+                    grunt.config.set(`watch.allSources.options`, {
+                        spawn: false
+                    });
+                }
                 grunt.task.run('watch:allSources');
             } else {
                 grunt.log.error('No valid tasks to execute on change');
@@ -359,6 +416,7 @@ module.exports = function(grunt) {
         'format',
         'lint',
         'test:unit',
+        'test:api',
         'clean'
     ]);
 

@@ -1,0 +1,27 @@
+{
+    "default": {
+        "app": {
+            "defaultPort": 3000,
+            "enableTestRoutes": false
+        },
+        "log": {
+            "level": "trace",
+            "extremeLogging": false
+        }
+    },
+    "development": {
+        "app": {}
+    },
+    "test": {
+        "app": {
+            "enableTestRoutes": true
+        }
+    },
+    "production": {
+        "app": {},
+        "log": {
+            "level": "error",
+            "extremeLogging": true
+        }
+    }
+}
