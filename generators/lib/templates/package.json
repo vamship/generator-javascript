@@ -10,11 +10,11 @@
     "author": "<%= authorName %> <<%= authorEmail %>>",
     "license": "MIT",
     "devDependencies": {
-        "@vamship/grunt-utils": "^1.1.2",
-        "@vamship/test-utils": "^2.1.1",
+        "@vamship/grunt-utils": "^1.2.0",
+        "@vamship/test-utils": "^2.2.0",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "docdash": "^1.0.1",
+        "docdash": "^1.0.2",
         "grunt": "^1.0.3",
         "grunt-bump": "^0.8.0",
         "grunt-contrib-clean": "^2.0.0",
@@ -31,8 +31,8 @@
         "sinon-chai": "^3.3.0"
     },
     "dependencies": {
-        "@vamship/error-types": "^1.4.1",
-        "ajv": "^6.6.2"
+        "@vamship/error-types": "^1.5.0",
+        "ajv": "^6.7.0"
     },
     "repository": {
         "type": "git",
