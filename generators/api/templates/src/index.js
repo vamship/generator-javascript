@@ -15,7 +15,7 @@ const config = configProvider
 
 const logger = loggerProvider
     .configure('<%= projectName %>', {
-        extreme: config.get('app.extremeLogging'),
+        extreme: (config.get('log.extremeLogging') || '').toString() === 'true',
         level: config.get('app.logLevel')
     })
     .getLogger('main');
