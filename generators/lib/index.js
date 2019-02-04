@@ -39,6 +39,7 @@ module.exports = class extends Generator {
             'Gruntfile.js',
             'package.json',
             'README.md',
+            'LICENSE',
             'src/index.js',
             'test/unit/index-spec.js'
         ].forEach((srcFile) => {

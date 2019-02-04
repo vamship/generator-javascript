@@ -43,6 +43,7 @@ module.exports = class extends Generator {
             'Gruntfile.js',
             'package.json',
             'README.md',
+            'LICENSE',
             'src/commands/greet.js',
             'test/unit/commands/greet-spec.js'
         ].forEach((srcFile) => {

@@ -32,6 +32,7 @@ module.exports = class extends Generator {
             'package.json',
             'Gruntfile.js',
             'README.md',
+            'LICENSE',
             '_gitignore',
             '_eslintrc.json',
             '_npmignore',
