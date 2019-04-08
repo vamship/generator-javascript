@@ -85,7 +85,8 @@ module.exports = function(grunt) {
         },
         docs: null,
         node_modules: null,
-        coverage: null
+        coverage: null,
+        '.nyc_output': null
     });
 
     // Shorthand references to key folders.
@@ -94,6 +95,7 @@ module.exports = function(grunt) {
     const DOCS = PROJECT.getChild('docs');
     const NODE_MODULES = PROJECT.getChild('node_modules');
     const COVERAGE = PROJECT.getChild('coverage');
+    const NYC = PROJECT.getChild('.nyc_output');
 
     /* ------------------------------------------------------------------------
      * Grunt task configuration
@@ -105,20 +107,8 @@ module.exports = function(grunt) {
          */
         clean: {
             coverage: [COVERAGE.path],
-            ctags: [PROJECT.getFilePath('tags')]
-        },
-
-        /**
-         * Configuration for grunt-mocha-istanbul, which is used to:
-         *  - Execute server side node.js tests, with code coverage
-         */
-        mocha_istanbul: {
-            options: {
-                reportFormats: ['text-summary', 'html'],
-                reporter: 'spec',
-                colors: true
-            },
-            unit: [TEST.getChild('unit').getAllFilesPattern('js')]
+            ctags: [PROJECT.getFilePath('tags')],
+            nyc: [NYC.path]
         },
 
         /**
@@ -146,6 +136,22 @@ module.exports = function(grunt) {
                 SRC.getAllFilesPattern('js'),
                 TEST.getAllFilesPattern('js')
             ]
+        },
+
+        /**
+         * Configuration for grunt-shell, which is used to execute:
+         * - Run mocha tests with code coverage
+         */
+        shell: {
+            test: {
+                command: () => {
+                    return [
+                        'nyc --reporter text-summary --reporter html ',
+                        'mocha --color -R spec --recursive ',
+                        '<%%= shell.test.__path %%>'
+                    ].join(' ');
+                }
+            }
         },
 
         /**
@@ -192,22 +198,32 @@ module.exports = function(grunt) {
      */
     grunt.registerTask('test', 'Executes tests against sources', (testType) => {
         testType = testType || 'unit';
-        let task;
 
+        const tasks = [];
         if (['unit'].indexOf(testType) >= 0) {
-            task = `mocha_istanbul:${testType}`;
+            let testSuite = grunt.option('test-suite');
+            let testTarget = TEST.getChild(testType);
 
-            const testSuite = grunt.option('test-suite');
             if (typeof testSuite === 'string' && testSuite.length > 0) {
-                const path = TEST.getChild(testType).getFilePath(testSuite);
+                if (!testSuite.endsWith('.js')) {
+                    grunt.log.warn('Adding .js suffix to test suite');
+                    testSuite = `${testSuite}.js`;
+                }
+                testTarget = testTarget.getFilePath(testSuite);
+
                 grunt.log.writeln(`Running test suite: [${testSuite}]`);
-                grunt.log.writeln(`Tests will be limited to: [${path}]`);
-                grunt.config.set(`mocha_istanbul.${testType}`, path);
+                grunt.log.writeln(`Tests will be limited to: [${testTarget}]`);
+            } else {
+                testTarget = testTarget.absolutePath;
+                grunt.log.writeln(`Running all tests of type: [${testType}]`);
             }
+
+            grunt.config.set('shell.test.__path', testTarget);
+            tasks.push('shell:test');
         }
 
-        if (task) {
-            grunt.task.run(task);
+        if (tasks.length > 0) {
+            grunt.task.run(tasks);
         } else {
             grunt.log.error(`Unrecognized test type: [${testType}]`);
             grunt.log.warn('Type "grunt help" for help documentation');
