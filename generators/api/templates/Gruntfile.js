@@ -26,7 +26,7 @@ const HELP_TEXT =
 '                                    against all source files.                   \n' +
 '                        [unit]    : Executes unit tests against all source      \n' +
 '                                    files.                                      \n' +
-'                         [api]    : Executes http request test against server   \n' +
+'                         [e2e]    : Executes http request test against server   \n' +
 '                                    routes. This task will automatically launch \n' +
 '                                    the web server prior to running the tests,  \n' +
 '                                    and shutdown the server after the tests have\n' +
@@ -62,9 +62,9 @@ const HELP_TEXT =
 '                       not any additional tags are specified.                   \n' +
 <% } -%>
 '                                                                                \n' +
-'   test:[unit|api]   : Executes tests against source files. The type of test    \n' +
+'   test:[unit|e2e]   : Executes tests against source files. The type of test    \n' +
 '                       to execute is specified by the first sub target          \n' +
-'                       (unit/api).                                              \n' +
+'                       (unit/e2e).                                              \n' +
 '                       If required by the tests, an instance of express will be \n' +
 '                       started prior to executing the tests.                    \n' +
 '                                                                                \n' +
@@ -111,12 +111,13 @@ module.exports = function(grunt) {
         src: null,
         test: {
             unit: null,
-            api: null
+            e2e: null
         },
         docs: null,
         logs: null,
         node_modules: null,
-        coverage: null
+        coverage: null,
+        '.nyc_output': null
     });
 
     const packageConfig = grunt.file.readJSON('package.json') || {};
@@ -139,6 +140,7 @@ module.exports = function(grunt) {
     const DOCS = PROJECT.getChild('docs');
     const NODE_MODULES = PROJECT.getChild('node_modules');
     const COVERAGE = PROJECT.getChild('coverage');
+    const NYC = PROJECT.getChild('.nyc_output');
     const LOGS = PROJECT.getChild('logs');
 
     /* ------------------------------------------------------------------------
@@ -151,22 +153,9 @@ module.exports = function(grunt) {
          */
         clean: {
             coverage: [COVERAGE.path],
+            nyc: [NYC.path],
             logs: [LOGS.getAllFilesPattern('log')],
             ctags: [PROJECT.getFilePath('tags')]
-        },
-
-        /**
-         * Configuration for grunt-mocha-istanbul, which is used to:
-         *  - Execute server side node.js tests, with code coverage
-         */
-        mocha_istanbul: {
-            options: {
-                reportFormats: ['text-summary', 'html'],
-                reporter: 'spec',
-                colors: true
-            },
-            unit: [TEST.getChild('unit').getAllFilesPattern('js')],
-            api: [TEST.getChild('api').getAllFilesPattern('js')]
         },
 
         /**
@@ -201,6 +190,7 @@ module.exports = function(grunt) {
          * Configuration for grunt-shell, which is used to execute:
          * - Build docker images using the docker cli
          * - Publish docker images to ECR
+         * - Run mocha tests with code coverage
          */
         shell: {
             dockerBuild: {
@@ -223,6 +213,15 @@ module.exports = function(grunt) {
                         `docker tag ${PROJECT.dockerTag} ${targetTag}`,
                         `docker push ${targetTag}`
                     ].join('&&');
+                }
+            },
+            test: {
+                command: () => {
+                    return [
+                        'nyc --reporter text-summary --reporter html ',
+                        'mocha --color -R spec --recursive ',
+                        '<%%= shell.test.__path %%>'
+                    ].join(' ');
                 }
             }
         },
@@ -302,28 +301,32 @@ module.exports = function(grunt) {
      */
     grunt.registerTask('test', 'Executes tests against sources', (testType) => {
         testType = testType || 'unit';
-        const validTasks = {
-            unit: [`mocha_istanbul:${testType}`],
-            api: [`mocha_istanbul:${testType}`]
-        };
-        const requireServer = testType === 'api' && !grunt.option('no-server');
+        const requireServer = testType === 'e2e' && !grunt.option('no-server');
 
-        const tasks = validTasks[testType];
-        if (['unit', 'api'].indexOf(testType) >= 0) {
+        const tasks = [];
+        if (['unit', 'e2e'].indexOf(testType) >= 0) {
             let testSuite = grunt.option('test-suite');
+            let testTarget = TEST.getChild(testType);
+
             if (typeof testSuite === 'string' && testSuite.length > 0) {
                 if (!testSuite.endsWith('.js')) {
                     grunt.log.warn('Adding .js suffix to test suite');
-                    testSuite = testSuite + '.js';
+                    testSuite = `${testSuite}.js`;
                 }
-                const path = TEST.getChild(testType).getFilePath(testSuite);
+                testTarget = testTarget.getFilePath(testSuite);
+
                 grunt.log.writeln(`Running test suite: [${testSuite}]`);
-                grunt.log.writeln(`Tests will be limited to: [${path}]`);
-                grunt.config.set(`mocha_istanbul.${testType}`, path);
+                grunt.log.writeln(`Tests will be limited to: [${testTarget}]`);
+            } else {
+                testTarget = testTarget.absolutePath;
+                grunt.log.writeln(`Running all tests of type: [${testType}]`);
             }
+
+            grunt.config.set('shell.test.__path', testTarget);
+            tasks.push('shell:test');
         }
 
-        if (tasks) {
+        if (tasks.length > 0) {
             if (requireServer) {
                 tasks.unshift('express:test');
                 tasks.push('express:test:stop');
@@ -349,7 +352,7 @@ module.exports = function(grunt) {
                 docs: ['docs'],
                 lint: ['lint'],
                 unit: ['test:unit'],
-                api: ['test:api'],
+                e2e: ['test:e2e'],
                 server: ['express:monitor', 'monitor:server']
             };
 
@@ -416,7 +419,7 @@ module.exports = function(grunt) {
         'format',
         'lint',
         'test:unit',
-        'test:api',
+        'test:e2e',
         'clean'
     ]);
 

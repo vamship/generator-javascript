@@ -49,9 +49,9 @@ module.exports = class extends Generator {
             'src/routes/test/index.js',
 
             'test/utils/api-utils.js',
-            'test/api/core-routes.js',
-            'test/api/greeting-routes.js',
-            'test/api/health-routes.js',
+            'test/e2e/core-routes.js',
+            'test/e2e/greeting-routes.js',
+            'test/e2e/health-routes.js',
 
             'test/unit/handlers/greeting-handler-spec.js',
 
