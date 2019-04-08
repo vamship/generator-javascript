@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const _loggerProvider = require('@vamship/logger');
 const _configProvider = require('@vamship/config');
+const _loggerProvider = require('@vamship/logger');
 const _yargs = require('yargs');
 
 const config = _configProvider
