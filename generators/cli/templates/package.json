@@ -25,9 +25,7 @@
         "grunt-jsdoc": "^2.3.0",
         "grunt-mocha-istanbul": "^5.0.2",
         "grunt-prettier": "^1.2.0",
-<% if(dockerRequired) {-%>
         "grunt-shell": "^3.0.1",
-<% }-%>
         "load-grunt-tasks": "^4.0.0",
         "mocha": "^6.1.2",
         "nyc": "^13.3.0",
