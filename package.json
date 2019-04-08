@@ -51,6 +51,16 @@
         "*.json": [
             "prettier --write",
             "git add"
+        ],
+        "ignore": [
+            "generators/api/templates/package.json",
+            "generators/api/templates/Gruntfile.js",
+            "generators/cli/templates/package.json",
+            "generators/cli/templates/Gruntfile.js",
+            "generators/lib/templates/package.json",
+            "generators/lib/templates/Gruntfile.js",
+            "generators/ui/templates/package.json",
+            "generators/ui/templates/Gruntfile.js"
         ]
     },
     "eslintConfig": {
