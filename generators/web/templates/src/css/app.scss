@@ -1,0 +1,62 @@
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "~@blueprintjs/core/src/blueprint.scss";
+
+$colors: (
+  'primary': #0e2639,
+  'primary-light': #394e63,
+  'primary-dark': #000014,
+
+  'primary-accent': #394e63,
+
+  'secondary': #7ac4d4,
+  'secondary-light': #adf7ff,
+  'secondary-dark': #4893a3,
+
+  'secondary-accent': #4893a3,
+
+  'background': #FFFFFF,
+  'surface': #F5F5F6,
+  'error': #BA1309,
+
+  'surface-accent': #EFEFEF,
+
+  'disabled': #999999,
+
+  'text-primary': #ffffff,
+  'text-secondary': #F5F5F6,
+  'text-background': #000000,
+  'text-surface': #000000,
+  'text-error': #ffffff,
+  'text-disabled': #dedede
+);
+
+@each $name, $hex in $colors {
+    .#{$name} {
+        color: $hex;
+
+        &:visited {
+            color: $hex;
+        }
+    }
+
+    .bg-#{$name} {
+        background-color: $hex;
+    }
+
+    .b--#{$name} {
+        border-color: $hex;
+    }
+
+    .hover-bg-#{$name} {
+        &:focus,
+        &:active,
+        &:hover {
+            background-color: $hex;
+        }
+    }
+
+    .hover-#{$name}:hover,
+    .hover-#{$name}:visited:hover {
+        color: $hex;
+    }
+}

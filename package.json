@@ -59,8 +59,8 @@
             "generators/cli/templates/Gruntfile.js",
             "generators/lib/templates/package.json",
             "generators/lib/templates/Gruntfile.js",
-            "generators/ui/templates/package.json",
-            "generators/ui/templates/Gruntfile.js"
+            "generators/web/templates/package.json",
+            "generators/web/templates/Gruntfile.js"
         ]
     },
     "eslintConfig": {

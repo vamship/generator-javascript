@@ -1,0 +1,18 @@
+{
+    "extends": ["eslint:recommended", "react-app"],
+    "plugins": [],
+    "parserOptions": {
+        "ecmaVersion": 5,
+        "sourceType": "module"
+    },
+    "rules": {
+        "semi": 2,
+        "no-trailing-spaces": "error",
+        "no-unused-vars": ["error", { "args": "none" }]
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "mocha": true
+    }
+}
