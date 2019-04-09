@@ -1,6 +1,6 @@
 {
     "name": "@vamship/generator-javascript",
-    "version": "1.3.2",
+    "version": "1.4.0",
     "description": "Yeoman generator for javascript projects",
     "homepage": "",
     "author": {
