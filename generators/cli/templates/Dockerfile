@@ -1,11 +1,13 @@
 FROM node:8.14.0-alpine
 
 ARG APP_NAME
-ARG BUILD_TIMESTAMP
+ARG APP_DESCRIPTION
 ARG APP_VERSION
+ARG BUILD_TIMESTAMP
 
 # Metadata
 LABEL org.label-schema.name=$APP_NAME \
+      org.label-schema.description=$APP_DESCRIPTION \
       org.label-schema.version=$APP_VERSION \
       org.label-schema.build-date=$BUILD_TIMESTAMP \
       org.label-schema.vcs-url="https://<%= gitUrl %>" \
