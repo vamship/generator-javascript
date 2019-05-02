@@ -43,10 +43,15 @@ module.exports = class extends Generator {
             'src/index.js',
             'test/unit/index-spec.js'
         ].forEach((srcFile) => {
-            const destFile =
-                srcFile.indexOf('_') === 0
-                    ? srcFile.replace('_', '.')
-                    : srcFile;
+            const tokens = srcFile.split('/');
+
+            // Replace leading _ with . in the file name
+            const fileName = tokens[tokens.length - 1];
+            if (fileName.indexOf('_') === 0) {
+                tokens[tokens.length - 1] = fileName.replace('_', '.');
+            }
+
+            const destFile = tokens.join('/');
             this.fs.copyTpl(
                 this.templatePath(srcFile),
                 this.destinationPath(destFile),

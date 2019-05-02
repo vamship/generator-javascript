@@ -8,18 +8,23 @@ const _consts = require('../../utils/constants');
 const _package = require('../../package.json');
 
 module.exports = class extends Generator {
-   /**
-    * Gather basic project information.
-    */
+    /**
+     * Gather basic project information.
+     */
     gatherProjectInfo() {
         const generatorTitle = `${_consts.GENERATOR_NAME} v${_package.version}`;
-        this.log(_yosay(
-            `Javascript Web Project Generator.\n${_chalk.red(generatorTitle)} `
-        ));
+        this.log(
+            _yosay(
+                `Javascript Web Project Generator.\n${_chalk.red(
+                    generatorTitle
+                )} `
+            )
+        );
 
         this.config.set('_projectType', _consts.SUB_GEN_API);
-        return _prompts.getProjectInfo(this, true)
-            .then(() => { return _prompts.getAuthorInfo(this, true); });
+        return _prompts.getProjectInfo(this, true).then(() => {
+            return _prompts.getAuthorInfo(this, true);
+        });
     }
 
     /**
@@ -48,10 +53,16 @@ module.exports = class extends Generator {
             'src/js/components/app.jsx',
 
             'src/js/utils/logger.js'
-
         ].forEach((srcFile) => {
-            const destFile = (srcFile.indexOf('_') === 0) ?
-                                        srcFile.replace('_', '.'): srcFile;
+            const tokens = srcFile.split('/');
+
+            // Replace leading _ with . in the file name
+            const fileName = tokens[tokens.length - 1];
+            if (fileName.indexOf('_') === 0) {
+                tokens[tokens.length - 1] = fileName.replace('_', '.');
+            }
+
+            const destFile = tokens.join('/');
             this.fs.copyTpl(
                 this.templatePath(srcFile),
                 this.destinationPath(destFile),
@@ -87,6 +98,6 @@ module.exports = class extends Generator {
             `                                                                                `,
             `--------------------------------------------------------------------------------`,
             `                                                                                `
-        ].forEach(line => this.log(line));
+        ].forEach((line) => this.log(line));
     }
 };
