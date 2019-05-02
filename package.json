@@ -44,14 +44,16 @@
         "testEnvironment": "node"
     },
     "lint-staged": {
-        "*.js": [
-            "eslint --fix",
-            "git add"
-        ],
-        "*.json": [
-            "prettier --write",
-            "git add"
-        ],
+        "linters": {
+            "*.js": [
+                "eslint --fix",
+                "git add"
+            ],
+            "*.json": [
+                "prettier --write",
+                "git add"
+            ]
+        },
         "ignore": [
             "generators/api/templates/package.json",
             "generators/api/templates/Gruntfile.js",
