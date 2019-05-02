@@ -6,6 +6,12 @@ const routeDefinitions = [
         path: '/',
         handler: () => ({ status: 'ok' }),
         inputMapper: () => ({})
+    },
+    {
+        method: 'GET',
+        path: '/ready',
+        handler: () => ({ status: 'ok' }),
+        inputMapper: () => ({})
     }
 ];
 
