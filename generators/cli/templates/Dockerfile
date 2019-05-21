@@ -3,6 +3,7 @@ FROM node:8.14.0-alpine
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_VERSION
+ARG CONFIG_NAME
 ARG BUILD_TIMESTAMP
 
 # Metadata
@@ -21,7 +22,7 @@ RUN mkdir -p app/logs
 
 COPY ./src app/src
 COPY ./bin app/bin
-COPY ./.${APP_NAME}rc app/.${APP_NAME}rc
+COPY ./.${CONFIG_NAME}rc app/.${CONFIG_NAME}rc
 COPY ./package.json app/package.json
 COPY ./package-lock.json app/package-lock.json
 
