@@ -10,7 +10,7 @@ const config = _configProvider
     .setApplicationScope(process.env.NODE_ENV)
     .getConfig();
 
-_loggerProvider.configure('<%= projectName %>', {
+_loggerProvider.configure('<%= projectCamelCasedName %>', {
     extreme: config.get('log.extremeLogging'),
     destination: 'process.stderr',
     level: config.get('log.level')
