@@ -1,4 +1,4 @@
-FROM node:8.14.0-alpine
+FROM node:10.15.3-alpine
 
 ARG APP_NAME
 ARG APP_DESCRIPTION
