@@ -249,7 +249,12 @@ module.exports = {
      *         is completed.
      */
     getDockerInfo: function(gen, force) {
-        const properties = ['dockerRequired', 'dockerCustomRegistry'];
+        const properties = [
+            'dockerRequired',
+            'dockerFullRepo',
+            'dockerAutoGenRepo',
+            'dockerCustomRegistry'
+        ];
         const config = {};
         properties.forEach((propName) => {
             config[propName] = gen.config.get(propName);
@@ -265,9 +270,37 @@ module.exports = {
             prompts.push({
                 type: 'confirm',
                 name: 'dockerRequired',
-                message: 'Setup to use Docker?',
+                message: 'Configure Docker container?',
                 when: dockerOptional,
                 default: true
+            });
+        }
+
+        if (!config.dockerAutoGenRepo || force) {
+            prompts.push({
+                type: 'confirm',
+                name: 'dockerAutoGenRepo',
+                message: 'Auto generate docker repo name?',
+                when: (answers) => !dockerOptional || answers.dockerRequired,
+                default: true
+            });
+        }
+
+        if (!config.dockerFullRepo || force) {
+            prompts.push({
+                type: 'input',
+                name: 'dockerFullRepo',
+                message: 'Docker repo full name?',
+                when: (answers) =>
+                    (!dockerOptional || answers.dockerRequired) &&
+                    !answers.dockerAutoGenRepo,
+                default: config.dockerFullRepo,
+                validate: (answer) => {
+                    if (typeof answer !== 'string' || answer.length <= 0) {
+                        return 'Please enter the full docker repo name';
+                    }
+                    return true;
+                }
             });
         }
 
@@ -276,7 +309,9 @@ module.exports = {
                 type: 'input',
                 name: 'dockerCustomRegistry',
                 message: 'Docker registry (leave empty for default)?',
-                when: (answers) => !dockerOptional || answers.dockerRequired,
+                when: (answers) =>
+                    (!dockerOptional || answers.dockerRequired) &&
+                    answers.dockerAutoGenRepo,
                 default: config.dockerCustomRegistry
             });
         }
