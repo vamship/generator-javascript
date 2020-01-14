@@ -4,6 +4,5 @@
     "GENERATOR_NAME": "@vamship/javascript",
     "SUB_GEN_LIB": "lib",
     "SUB_GEN_CLI": "cli",
-    "SUB_GEN_API": "api",
-    "SUB_GEN_WEB": "web"
+    "SUB_GEN_API": "api"
 }

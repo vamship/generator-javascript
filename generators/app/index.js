@@ -25,8 +25,7 @@ module.exports = class extends Generator {
                 choices: [
                     _consts.SUB_GEN_API,
                     _consts.SUB_GEN_LIB,
-                    _consts.SUB_GEN_CLI,
-                    _consts.SUB_GEN_WEB
+                    _consts.SUB_GEN_CLI
                 ],
                 default: 'library'
             }
@@ -46,11 +45,6 @@ module.exports = class extends Generator {
                 case _consts.SUB_GEN_CLI:
                     this.composeWith(
                         `${_consts.GENERATOR_NAME}:${_consts.SUB_GEN_CLI}`
-                    );
-                    break;
-                case _consts.SUB_GEN_WEB:
-                    this.composeWith(
-                        `${_consts.GENERATOR_NAME}:${_consts.SUB_GEN_WEB}`
                     );
                     break;
             }
