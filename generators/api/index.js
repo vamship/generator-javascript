@@ -35,13 +35,12 @@ module.exports = class extends Generator {
         [
             'Dockerfile',
             'package.json',
-            'Gruntfile.js',
+            'Gulpfile.js',
             'README.md',
             'LICENSE',
             '_gitignore',
-            '_eslintrc.json',
-            '_npmignore',
             '_projections.json',
+            '_eslintrc.js',
             '_prettierrc',
 
             'src/index.js',
@@ -90,48 +89,39 @@ module.exports = class extends Generator {
      * Display completed message with future actions.
      */
     finish() {
-        const grunt = _chalk.green('grunt');
-        const gruntTestCommand = _chalk.yellow('test');
-        const gruntMonitorUnitCommand = _chalk.yellow('monitor:unit');
-        const gruntMonitorServerCommand = _chalk.yellow('monitor:server');
-        const gruntFormatCommand = _chalk.yellow('format');
-        const gruntLintCommand = _chalk.yellow('lint');
-        const gruntHelpCommand = _chalk.yellow('help');
-        const gruntDocsCommand = _chalk.yellow('docs');
-        const gruntPackageCommand = _chalk.yellow('package');
+        const buildTool = _chalk.green('gulp');
+        const buildCommand = _chalk.yellow('build');
+        const buildOnChangeCommand = _chalk.yellow('watch-build');
+        const testCommand = _chalk.yellow('test-unit');
+        const testOnChangeCommand = _chalk.yellow('watch-test-unit');
+        const watchTestCommand = _chalk.yellow('monitor:unit');
+        const formatCommand = _chalk.yellow('format');
+        const lintCommand = _chalk.yellow('lint');
+        const tasksCommand = _chalk.yellow('--tasks');
+        const docsCommand = _chalk.yellow('docs');
 
         this.log(_consts.SEPARATOR);
         [
             `                                                                                `,
             `--------------------------------------------------------------------------------`,
-            ` Your Javascript API project has been created, and is ready for use. Grunt tasks`,
-            ` have been provided for common development tasks such as:                       `,
-            `                                                                                `,
-            ` Running all unit tests:                                                        `,
-            `   ${grunt} ${gruntTestCommand}                                                 `,
-            `                                                                                `,
-            ` Test driven development:                                                       `,
-            `   ${grunt} ${gruntMonitorUnitCommand}                                          `,
-            `                                                                                `,
-            ` Run a local server that restarts on changes:                                   `,
-            `   ${grunt} ${gruntMonitorServerCommand}                                        `,
-            `                                                                                `,
-            ` Formatting and linting files:                                                  `,
-            `   ${grunt} ${gruntFormatCommand}                                               `,
-            `   ${grunt} ${gruntLintCommand}                                                 `,
-            `                                                                                `,
-            ` Generating documentation:                                                      `,
-            `   ${grunt} ${gruntDocsCommand}                                                 `,
-            `                                                                                `,
-            ` Packaging the API server in a Docker container:                                `,
-            `   ${grunt} ${gruntPackageCommand}                                              `,
-            `                                                                                `,
-            ` Several other useful tasks have been packaged up with the Gruntfile. You can   `,
-            ` review them all by running:                                                    `,
-            `   ${grunt} ${gruntHelpCommand}                                                 `,
-            `                                                                                `,
+            ` Your Javascript libary project has been created, and is ready for use. Gulp`,
+            ` tasks have been provided for common development tasks such as:`,
+            ``,
+            ` Running all unit tests:`,
+            `   ${buildTool} ${testCommand}`,
+            ` Test files on change:`,
+            `   ${buildTool} ${testOnChangeCommand}`,
+            ``,
+            ` Formatting and linting files:`,
+            `   ${buildTool} ${formatCommand}`,
+            `   ${buildTool} ${lintCommand}`,
+            ``,
+            ` Several other useful tasks have been packaged up with the Gulpfile. You can`,
+            ` review them all by running:`,
+            `   ${buildTool} ${tasksCommand}`,
+            ``,
             `--------------------------------------------------------------------------------`,
-            `                                                                                `
+            ``
         ].forEach((line) => this.log(line));
     }
 };
