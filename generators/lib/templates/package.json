@@ -8,12 +8,12 @@
         "test": "gulp test-unit"
     },
     "files": ["package.json", "LICENSE", "README.md", "src/**/*"],
-    "keywords": <%- JSON.stringify(projectKeywords) %>,
     "author": "<%= authorName %> <<%= authorEmail %>>",
+    "keywords": <%- JSON.stringify(projectKeywords) %>,
     "license": "MIT",
     "devDependencies": {
-        "@vamship/build-utils": "0.1.1",
-        "@vamship/test-utils": "^2.4.8",
+        "@vamship/build-utils": "0.2.0",
+        "@vamship/test-utils": "^2.4.9",
         "ansi-colors": "^4.1.1",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
@@ -23,12 +23,12 @@
         "mocha": "^7.0.0",
         "nyc": "^15.0.0",
         "rewire": "^4.0.1",
-        "sinon": "^8.0.4",
+        "sinon": "^8.1.0",
         "sinon-chai": "^3.4.0"
     },
     "dependencies": {
-        "@vamship/error-types": "^1.7.7",
-        "ajv": "^6.10.2"
+        "@vamship/error-types": "^1.7.8",
+        "ajv": "^6.11.0"
     },
     "repository": {
         "type": "git",
