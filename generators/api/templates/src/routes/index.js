@@ -27,7 +27,7 @@ const _logger = _loggerProvider.getLogger('routes');
 module.exports = {
     setup: (app) => {
         // ----------  Routers ----------
-        if (process.env.ENABLE_TEST_ROUTES) {
+        if (process.env.ENABLE_TEST_ROUTES === 'true') {
             _logger.warn('Mounting test routes. Not intended for production!');
             app.use('/__test__', _testRoutes);
         }
