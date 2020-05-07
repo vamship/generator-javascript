@@ -8,15 +8,12 @@ const express = require('express');
  */
 const logger = loggerProvider
     .configure('<%= projectName %>', {
-        extreme: (config.get('log.extremeLogging') || '').toString() === 'true',
-        level: config.get('log.level')
+        extreme: process.env.EXTREME_LOGGING === 'true',
+        level: process.env.LOG_LEVEL || 'info'
     })
     .getLogger('main');
 
 logger.trace('Logger initialized');
-logger.trace('Application configuration', {
-    app: config.get('app')
-});
 
 // ---------- Application Initialization ----------
 const routes = require('./routes');
