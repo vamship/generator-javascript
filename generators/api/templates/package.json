@@ -53,14 +53,19 @@
     "homepage": "https://<%= gitUrl %>#readme",
     "buildMetadata": {
         "projectType": "api",
+        "requiredEnv": [],
 <% if(dockerRequired) {-%>
         "language": "js",
         "docker": {
+            "default": {
 <%   if(dockerFullRepo) {-%>
-            "repo": "<%= dockerFullRepo %>"
+                "repo": "<%= dockerFullRepo %>"
 <%   } else if(dockerCustomRegistry) {-%>
-            "registry": "<%= dockerCustomRegistry %>"
+                "registry": "<%= dockerCustomRegistry %>"
 <%   }-%>
+                "buildArgs": {
+                }
+            }
         }
 <% } else {-%>
         "language": "js"
