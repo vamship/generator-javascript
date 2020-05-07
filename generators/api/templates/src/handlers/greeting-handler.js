@@ -3,7 +3,7 @@
 const { argValidator: _argValidator } = require('@vamship/arg-utils');
 const GREETINGS = {
     en: 'Hello',
-    fr: 'Bonjour'
+    fr: 'Bonjour',
 };
 
 /**
@@ -23,7 +23,7 @@ const greetingHandler = (input, context, ext) => {
     }
 
     return {
-        message: `${greeting}, ${messageName}`
+        message: `${greeting}, ${messageName}`,
     };
 };
 

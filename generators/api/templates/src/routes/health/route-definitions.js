@@ -5,14 +5,14 @@ const routeDefinitions = [
         method: 'GET',
         path: '/',
         handler: () => ({ status: 'ok' }),
-        inputMapper: () => ({})
+        inputMapper: () => ({}),
     },
     {
         method: 'GET',
         path: '/ready',
         handler: () => ({ status: 'ok' }),
-        inputMapper: () => ({})
-    }
+        inputMapper: () => ({}),
+    },
 ];
 
 module.exports = routeDefinitions;

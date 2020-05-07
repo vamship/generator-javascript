@@ -3,7 +3,7 @@
 const {
     args: _argErrors,
     data: _dataErrors,
-    http: _httpErrors
+    http: _httpErrors,
 } = require('@vamship/error-types');
 const _loggerProvider = require('@vamship/logger');
 
@@ -15,7 +15,7 @@ const {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
-    ForbiddenError
+    ForbiddenError,
 } = _httpErrors;
 const { DuplicateRecordError, ConcurrencyControlError } = _dataErrors;
 const { SchemaError } = _argErrors;
@@ -33,12 +33,12 @@ module.exports = {
         }
 
         _logger.info('Mounting health check routes', {
-            path: '/health'
+            path: '/health',
         });
         app.use('/health', _healthRoutes);
 
         _logger.info('Mounting greeting routes', {
-            path: '/greeting'
+            path: '/greeting',
         });
         app.use('/greeting', _greetingRoutes);
 
@@ -61,7 +61,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof NotFoundError) {
                 res.status(404).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -72,7 +72,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof ConcurrencyControlError) {
                 res.status(409).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -83,7 +83,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof DuplicateRecordError) {
                 res.status(409).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -94,7 +94,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof BadRequestError) {
                 res.status(400).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -105,7 +105,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof UnauthorizedError) {
                 res.status(401).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -116,7 +116,7 @@ module.exports = {
         app.use((err, req, res, next) => {
             if (err instanceof ForbiddenError) {
                 res.status(403).json({
-                    error: err.message
+                    error: err.message,
                 });
             } else {
                 next(err);
@@ -128,8 +128,8 @@ module.exports = {
             _logger.error(err);
             const message = 'Internal server error';
             res.status(500).json({
-                error: message
+                error: message,
             });
         });
-    }
+    },
 };

@@ -3,7 +3,7 @@
 const {
     args: _argErrors,
     data: _dataErrors,
-    http: _httpErrors
+    http: _httpErrors,
 } = require('@vamship/error-types');
 const { Router } = require('express');
 
@@ -12,7 +12,7 @@ const {
     BadRequestError,
     NotFoundError,
     UnauthorizedError,
-    ForbiddenError
+    ForbiddenError,
 } = _httpErrors;
 const { DuplicateRecordError, ConcurrencyControlError } = _dataErrors;
 

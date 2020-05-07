@@ -9,18 +9,18 @@ const routeDefinitions = [
         handler: greetingHandler,
         inputMapper: {
             name: 'params.name',
-            language: 'params.language'
+            language: 'params.language',
         },
         schema: {
             $schema: 'http://json-schema.org/draft-07/schema#',
             description: 'Schema for greet user API',
             properties: {
                 language: { type: 'string', enum: ['en', 'fr'] },
-                name: { type: 'string', minLength: 2 }
+                name: { type: 'string', minLength: 2 },
             },
-            required: ['name', 'language']
-        }
-    }
+            required: ['name', 'language'],
+        },
+    },
 ];
 
 module.exports = routeDefinitions;

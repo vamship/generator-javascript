@@ -9,7 +9,7 @@ const express = require('express');
 const logger = loggerProvider
     .configure('<%= projectName %>', {
         extreme: process.env.EXTREME_LOGGING === 'true',
-        level: process.env.LOG_LEVEL || 'info'
+        level: process.env.LOG_LEVEL || 'info',
     })
     .getLogger('main');
 

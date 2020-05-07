@@ -13,7 +13,7 @@ const { expect, request } = _chai;
 const { testValues: _testValues } = require('@vamship/test-utils');
 const {
     endpoint,
-    getRouteBuilder: _getRouteBuilder
+    getRouteBuilder: _getRouteBuilder,
 } = require('../utils/api-utils');
 
 describe('[core routes]', () => {
@@ -31,7 +31,7 @@ describe('[core routes]', () => {
                     );
                     expect(res.body).to.deep.equal({
                         error:
-                            '[BadRequestError] Incorrect or malformed request'
+                            '[BadRequestError] Incorrect or malformed request',
                     });
                     expect(res.error).to.exist;
                 });
@@ -48,7 +48,7 @@ describe('[core routes]', () => {
                     );
                     expect(res.body).to.deep.equal({
                         error:
-                            '[BadRequestError] [SchemaError] Schema validation failed'
+                            '[BadRequestError] [SchemaError] Schema validation failed',
                     });
                     expect(res.error).to.exist;
                 });
@@ -66,7 +66,7 @@ describe('[core routes]', () => {
                         /^application\/json/
                     );
                     expect(res.body).to.deep.equal({
-                        error: '[DuplicateRecordError] Duplicate record error'
+                        error: '[DuplicateRecordError] Duplicate record error',
                     });
                     expect(res.error).to.exist;
                 });
@@ -83,7 +83,7 @@ describe('[core routes]', () => {
                     );
                     expect(res.body).to.deep.equal({
                         error:
-                            '[ConcurrencyControlError] Concurrency check failed'
+                            '[ConcurrencyControlError] Concurrency check failed',
                     });
                     expect(res.error).to.exist;
                 });
@@ -101,7 +101,7 @@ describe('[core routes]', () => {
                         /^application\/json/
                     );
                     expect(res.body).to.deep.equal({
-                        error: '[UnauthorizedError] Authorization failed'
+                        error: '[UnauthorizedError] Authorization failed',
                     });
                     expect(res.error).to.exist;
                 });
@@ -120,7 +120,7 @@ describe('[core routes]', () => {
                     );
                     expect(res.body).to.deep.equal({
                         error:
-                            '[ForbiddenError] Access to this resource is forbidden'
+                            '[ForbiddenError] Access to this resource is forbidden',
                     });
                     expect(res.error).to.exist;
                 });
@@ -138,7 +138,7 @@ describe('[core routes]', () => {
                         /^application\/json/
                     );
                     expect(res.body).to.deep.equal({
-                        error: '[NotFoundError] Resource not found'
+                        error: '[NotFoundError] Resource not found',
                     });
                     expect(res.error).to.exist;
                 });
@@ -155,7 +155,7 @@ describe('[core routes]', () => {
                         /^application\/json/
                     );
                     expect(res.body).to.deep.equal({
-                        error: '[NotFoundError] Resource not found'
+                        error: '[NotFoundError] Resource not found',
                     });
                     expect(res.error).to.exist;
                 });
@@ -173,7 +173,7 @@ describe('[core routes]', () => {
                         /^application\/json/
                     );
                     expect(res.body).to.deep.equal({
-                        error: 'Internal server error'
+                        error: 'Internal server error',
                     });
                     expect(res.error).to.exist;
                 });
