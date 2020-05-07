@@ -1,16 +1,9 @@
 'use strict';
 
-const _configProvider = require('@vamship/config');
-
-const _config = _configProvider
-    .configure('<%= projectCamelCasedName %>')
-    .setApplicationScope('test')
-    .getConfig();
-
 /**
  * The endpoint of the test server.
  */
-module.exports.endpoint = `http://localhost:${_config.get('app.defaultPort')}`;
+module.exports.endpoint = `http://localhost:${process.env.PORT}`;
 
 /**
  * Returns a route builder function prefixes any path with a mount point. The

@@ -31,7 +31,6 @@
     },
     "dependencies": {
         "@vamship/arg-utils": "^2.4.6",
-        "@vamship/config": "^1.4.6",
         "@vamship/error-types": "^1.7.8",
         "@vamship/expressjs-routes": "^1.7.2",
         "@vamship/logger": "^4.2.6",

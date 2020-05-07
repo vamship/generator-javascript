@@ -42,6 +42,7 @@ module.exports = class extends Generator {
             '_projections.json',
             '_eslintrc.js',
             '_prettierrc',
+            '_env',
 
             'src/index.js',
             'src/handlers/greeting-handler.js',
@@ -77,12 +78,6 @@ module.exports = class extends Generator {
                 this.props
             );
         });
-
-        this.fs.copyTpl(
-            this.templatePath('_rc'),
-            this.destinationPath(`.${this.props.projectCamelCasedName}rc`),
-            this.props
-        );
     }
 
     /**

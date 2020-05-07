@@ -1,18 +1,11 @@
 'use strict';
 
-const configProvider = require('@vamship/config');
 const loggerProvider = require('@vamship/logger');
 const express = require('express');
 
 /**
  * @module app
  */
-
-const config = configProvider
-    .configure('<%= projectCamelCasedName %>')
-    .setApplicationScope(process.env.NODE_ENV)
-    .getConfig();
-
 const logger = loggerProvider
     .configure('<%= projectName %>', {
         extreme: (config.get('log.extremeLogging') || '').toString() === 'true',
@@ -36,22 +29,11 @@ routes.setup(app);
 
 // ---------- Start web server ----------
 logger.trace('Extracting port from environment');
-let port = process.env.PORT;
 
-if (!port) {
-    port = config.get('app.defaultPort');
-    logger.info('Using default port from config', {
-        port
-    });
-} else {
-    logger.info('Using port from environment', {
-        port
-    });
-}
+const port = parseInt(process.env.PORT || '');
+logger.info({ port }, 'Port configuration');
 
 logger.trace('Launching web server');
 app.listen(port, () => {
-    logger.info('Server listening on port', {
-        port
-    });
+    logger.info({ port }, 'Server started');
 });

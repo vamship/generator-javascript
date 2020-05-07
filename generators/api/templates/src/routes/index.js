@@ -1,6 +1,5 @@
 'use strict';
 
-const _configProvider = require('@vamship/config');
 const {
     args: _argErrors,
     data: _dataErrors,
@@ -20,7 +19,6 @@ const {
 } = _httpErrors;
 const { DuplicateRecordError, ConcurrencyControlError } = _dataErrors;
 const { SchemaError } = _argErrors;
-const _config = _configProvider.getConfig();
 const _logger = _loggerProvider.getLogger('routes');
 
 /**
@@ -29,7 +27,7 @@ const _logger = _loggerProvider.getLogger('routes');
 module.exports = {
     setup: (app) => {
         // ----------  Routers ----------
-        if (_config.get('app.enableTestRoutes')) {
+        if (process.env.ENABLE_TEST_ROUTES) {
             _logger.warn('Mounting test routes. Not intended for production!');
             app.use('/__test__', _testRoutes);
         }
