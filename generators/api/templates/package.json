@@ -6,8 +6,8 @@
     "scripts": {
         "all": "gulp --series format lint test-unit clean",
         "test": "gulp test-unit",
-        "package": "gulp --series clean lint format build test-unit package",
-        "publish": "gulp --series clean lint format build test-unit package publish",
+        "package": "gulp --series clean lint format test-unit package",
+        "publish": "gulp --series clean lint format test-unit package publish",
         "watch:test": "gulp watch-test-unit",
         "start": "node src/index",
         "start:dev": "dotenv-load node src/index"
@@ -37,7 +37,7 @@
     "dependencies": {
         "@vamship/arg-utils": "^2.4.7",
         "@vamship/error-types": "^1.7.9",
-        "@vamship/expressjs-routes": "^2.0.0",
+        "@vamship/expressjs-routes": "^2.0.1",
         "@vamship/logger": "^4.2.7",
         "ajv": "^6.12.2",
         "bluebird": "^3.7.2",
