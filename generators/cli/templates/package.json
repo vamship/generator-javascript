@@ -10,9 +10,7 @@
         "test": "gulp test-unit",
         "package": "gulp --series clean lint format test-unit package",
         "publish": "gulp --series clean lint format test-unit package publish",
-        "watch:test": "gulp watch-test-unit",
-        "start": "node src/index",
-        "start:dev": "dotenv-load node src/index"
+        "watch:test": "gulp watch-test-unit"
     },
     "files": ["package.json", "LICENSE", "README.md", "src/**/*", "bin/**/*"],
     "author": "<%= authorName %> <<%= authorEmail %>>",
