@@ -11,7 +11,7 @@ LABEL org.label-schema.name=$APP_NAME \
       org.label-schema.version=$APP_VERSION \
       org.label-schema.build-date=$BUILD_TIMESTAMP \
       org.label-schema.vcs-url="https://<%= gitUrl %>" \
-      org.label-schema.url="https://<%= dockerRepoHome %>"
+      org.label-schema.url="<%= dockerRepoHome %>"
 
 RUN mkdir -p app/logs
 
