@@ -4,7 +4,7 @@
 const _loggerProvider = require('@vamship/logger');
 const _yargs = require('yargs');
 
-_loggerProvider.configure('<%= projectCamelCasedName %>', {
+_loggerProvider.configure('<%= projectName %>', {
     extreme: process.env.EXTREME_LOGGING === 'true',
     destination: 'process.stderr',
     level: process.env.LOG_LEVEL || 'info'
