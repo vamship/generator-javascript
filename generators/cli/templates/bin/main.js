@@ -1,19 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
-const _configProvider = require('@vamship/config');
 const _loggerProvider = require('@vamship/logger');
 const _yargs = require('yargs');
 
-const config = _configProvider
-    .configure('<%= projectCamelCasedName %>')
-    .setApplicationScope(process.env.NODE_ENV)
-    .getConfig();
-
 _loggerProvider.configure('<%= projectCamelCasedName %>', {
-    extreme: config.get('log.extremeLogging'),
+    extreme: process.env.EXTREME_LOGGING === 'true',
     destination: 'process.stderr',
-    level: config.get('log.level')
+    level: process.env.LOG_LEVEL || 'info'
 });
 const _logger = _loggerProvider.getLogger('main');
 

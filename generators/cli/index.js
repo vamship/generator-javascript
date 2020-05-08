@@ -42,6 +42,7 @@ module.exports = class extends Generator {
             '_projections.json',
             '_eslintrc.js',
             '_prettierrc',
+            '_env',
 
             'src/commands/greet.js',
             'test/unit/commands/greet-spec.js',
@@ -63,12 +64,6 @@ module.exports = class extends Generator {
                 this.props
             );
         });
-
-        this.fs.copyTpl(
-            this.templatePath('_rc'),
-            this.destinationPath(`.${this.props.projectCamelCasedName}rc`),
-            this.props
-        );
 
         this.fs.copyTpl(
             this.templatePath('bin/main.js'),
