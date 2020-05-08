@@ -7,7 +7,12 @@
     },
     "scripts": {
         "all": "gulp --series format lint test-unit clean",
-        "test": "gulp test-unit"
+        "test": "gulp test-unit",
+        "package": "gulp --series clean lint format test-unit package",
+        "publish": "gulp --series clean lint format test-unit package publish",
+        "watch:test": "gulp watch-test-unit",
+        "start": "node src/index",
+        "start:dev": "dotenv-load node src/index"
     },
     "files": ["package.json", "LICENSE", "README.md", "src/**/*", "bin/**/*"],
     "author": "<%= authorName %> <<%= authorEmail %>>",
@@ -20,6 +25,7 @@
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
         "docdash": "^1.2.0",
+        "dotenv-load": "^2.0.0",
         "gulp": "^4.0.2",
         "gulp-jsdoc3": "^3.0.0",
         "mocha": "^7.1.2",
