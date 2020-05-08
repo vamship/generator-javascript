@@ -9,5 +9,5 @@ module.exports = {
      * @param {String} second Dummy second argument
      * @return {String} Dummy return parameter
      */
-    todo: function(first, second) {}
+    todo: function (first, second) {},
 };
