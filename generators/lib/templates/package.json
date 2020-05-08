@@ -5,6 +5,9 @@
     "main": "src/index.js",
     "scripts": {
         "all": "gulp --series format lint test-unit clean",
+        "package": "gulp --series clean lint format test-unit package",
+        "publish": "gulp --series clean lint format test-unit package publish",
+        "watch:test": "gulp watch-test-unit",
         "test": "gulp test-unit"
     },
     "files": ["package.json", "LICENSE", "README.md", "src/**/*"],
