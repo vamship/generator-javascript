@@ -252,8 +252,7 @@ module.exports = {
         const properties = [
             'dockerRequired',
             'dockerFullRepo',
-            'dockerAutoGenRepo',
-            'dockerCustomRegistry'
+            'dockerRepoHome'
         ];
         const config = {};
         properties.forEach((propName) => {
@@ -276,24 +275,12 @@ module.exports = {
             });
         }
 
-        if (!config.dockerAutoGenRepo || force) {
-            prompts.push({
-                type: 'confirm',
-                name: 'dockerAutoGenRepo',
-                message: 'Auto generate docker repo name?',
-                when: (answers) => !dockerOptional || answers.dockerRequired,
-                default: true
-            });
-        }
-
         if (!config.dockerFullRepo || force) {
             prompts.push({
                 type: 'input',
                 name: 'dockerFullRepo',
                 message: 'Docker repo full name?',
-                when: (answers) =>
-                    (!dockerOptional || answers.dockerRequired) &&
-                    !answers.dockerAutoGenRepo,
+                when: (answers) => !dockerOptional || answers.dockerRequired,
                 default: config.dockerFullRepo,
                 validate: (answer) => {
                     if (typeof answer !== 'string' || answer.length <= 0) {
@@ -304,15 +291,19 @@ module.exports = {
             });
         }
 
-        if (!config.dockerCustomRegistry || force) {
+        if (!config.dockerRepoHome || force) {
             prompts.push({
                 type: 'input',
-                name: 'dockerCustomRegistry',
-                message: 'Docker registry (leave empty for default)?',
-                when: (answers) =>
-                    (!dockerOptional || answers.dockerRequired) &&
-                    answers.dockerAutoGenRepo,
-                default: config.dockerCustomRegistry
+                name: 'dockerRepoHome',
+                message: 'Docker repo home page?',
+                when: (answers) => !dockerOptional || answers.dockerRequired,
+                default: config.dockerRepoHome,
+                validate: (answer) => {
+                    if (typeof answer !== 'string' || answer.length <= 0) {
+                        return 'Please enter the docker repo home page';
+                    }
+                    return true;
+                }
             });
         }
 

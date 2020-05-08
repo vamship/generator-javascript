@@ -58,11 +58,7 @@
         "language": "js",
         "docker": {
             "default": {
-<%   if(dockerFullRepo) {-%>
-                "repo": "<%= dockerFullRepo %>"
-<%   } else if(dockerCustomRegistry) {-%>
-                "registry": "<%= dockerCustomRegistry %>"
-<%   }-%>
+                "repo": "<%= dockerFullRepo %>",
                 "buildArgs": {
                 }
             }
